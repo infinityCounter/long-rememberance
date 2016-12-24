@@ -1,6 +1,14 @@
 <html>
     <head>
         <link rel="stylesheet" href="../bower_components/CSS-Playing-Cards/cards.css"/>
+        <style>
+            #container{
+                width : 800px;
+                margin: 0 auto;
+                position: relative;
+                top: 100px;
+            }
+        </style>
     </head>
     <body>
 
@@ -9,6 +17,11 @@
         
         <script src="../bower_components/jquery/dist/jquery.min.js"></script>
         <script>
+            var turnCounter = 0;
+            var turnSelections = [];
+            var playerTurn = 0;
+            var players = [0,0];
+            var timer = 5;
             function shuffle(array) {
                 var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -32,24 +45,47 @@
             var cards = [];
             $.each(ranks, function(index, rank) {
                 var val = (index+1)*4-4;
-                console.log(val);
                 $.each(suits, function(index, suit){
 
                     var card = {};
                     var $el = document.createElement('div');
-                    $($el).addClass("card rank-"+rank+" "+suit);
+                    $($el).addClass("card rank-"+rank+" "+suit+" back");
                     $el.innerHTML = "<div class='rank'>"+rank+"</div><div class='suit'>&"+suit+";</div>";
                     val++;
                     card.place = val;
                     card.$el = $el;
                     card.rank = rank;
                     card.suit = suit;
+                    $el.card = card;
                     cards.push(card);
-                    console.log(card);
                     cards = shuffle(cards);
                     $.each(cards, function( index, card ){
                         $("#container").append(card.$el);
                     })
+
+                    $($el).click( function(){
+                        $($el).toggleClass("back");
+                        turnSelections.push($el);
+                        turnCounter++;
+                        if(turnCounter == 2){
+                            if(turnSelections[0].card.rank === turnSelections[1].card.rank){
+                                players[playerTurn]++;
+                                console.log(turnSelections);
+                                console.log(players[playerTurn]);
+                            }else{
+                               $.each(turnSelections, function(index, card){
+                                        $(card).delay(1000).queue(function(next){
+                                            $(this).toggleClass("back");
+                                            next();
+                                        });
+                                        console.log(card);
+                                });
+                            }
+                            turnCounter = 0;
+                            playerTurn = (playerTurn == 0)? 1 :0;
+                            turnSelections = [];
+                        }
+                    });
                 });
             });
         </script>
