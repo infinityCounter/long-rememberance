@@ -8,6 +8,11 @@
                 position: relative;
                 top: 100px;
             }
+
+            .matched{
+                color: gray!important;
+                background-color: gray!important;
+            }
         </style>
     </head>
     <body>
@@ -71,6 +76,14 @@
                             if(turnSelections[0].card.rank === turnSelections[1].card.rank){
                                 players[playerTurn]++;
                                 console.log(turnSelections);
+                                $.each(turnSelections, function(index, card){
+                                        card.className = '';
+                                        $(card).toggleClass("card");
+                                        $(card).attr('style','color: #fff!important; background-color: #fff!important');
+                                        $(card).prop('onclick',null).off('click');
+                                        console.log(card);
+                                });
+                                console.log(playerTurn);
                                 console.log(players[playerTurn]);
                             }else{
                                $.each(turnSelections, function(index, card){
