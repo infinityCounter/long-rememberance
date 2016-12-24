@@ -1,0 +1,15 @@
+{
+  "name": "long_rememberance",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Emile Keith (@infnityCounter)",
+  "license": "MIT",
+  "dependencies": {
+    "bower": "^1.8.0",
+    "stylus": "^0.54.5"
+  }
+}
