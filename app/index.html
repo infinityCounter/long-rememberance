@@ -2,12 +2,15 @@
     <head>
         <link rel="stylesheet" href="../bower_components/CSS-Playing-Cards/cards.css"/>
         <style>
+            @import url('https://fonts.googleapis.com/css?family=Orbitron');
 
             body{
                 margin: 0;
+                background: #761D83;
             }
 
             #container{
+                padding: 5% 0;
                 width : 800px;
                 margin: 0 auto;
                 position: relative;
@@ -24,7 +27,12 @@
                 position: absolute;
                 bottom: 0;
                 width: 100%;
-                height: 20%;
+                height: 17.5%;
+                padding: 13px;
+                box-sizing: border-box;
+                background-color: #60066D;
+                font-family: 'Orbitron', sans-serif;
+                color: #fff;
             }
 
             .playerBar:first-of-type{
@@ -36,20 +44,20 @@
     <body>
 
         <div id="player1bar" class="playerBar">
-                <span class="playerIDSpan">
-                    PLAYER 1
-                </span>
-                <span id="player1points" class="playerPointsSpan">
-            
-                </span>
+                <div class="playerIDDiv">
+                    PLAYER 1 &nbsp;&nbsp; (YOU)
+                </div>
+                <div id="player1points" class="playerPointsDiv">
+                    POINTS: 0
+                </div>
             </div>
             <div id="player2bar" class="playerBar">
-                <span class="playerIDSpan">
-                    PLAYER 2
-                </span>
-                <span id="player2points" class="playerPointsSpan">
-            
-                </span>
+                <div class="playerIDDiv">
+                    PLAYER 2 &nbsp;&nbsp; (COMPUTER)
+                </div>
+                <div id="player2points" class="playerPointsDiv">
+                    POINTS: 0
+                </div>
             </div>
 
         <div id="container" class="playingCards fourColours simpleCards">
@@ -117,14 +125,13 @@
                                 players[playerTurn]++;
                                 console.log(turnSelections);
                                 $.each(turnSelections, function(index, card){
-                                    
+
                                         card.className = '';
                                         $(card).toggleClass("card");
                                         $(card).attr('style','color: #fff!important; background-color: #fff!important');
                                         $(card).prop('onclick',null).off('click');
-                                        console.log(card);
                                 });
-                                console.log(playerTurn);
+                                $('#player' + (playerTurn + 1) + 'points').text('POINTS: '+players[playerTurn]);
                                 console.log(players[playerTurn]);
                             }else{
                                $.each(turnSelections, function(index, card){
@@ -133,12 +140,12 @@
                                             $(this).toggleClass("back");
                                             next();
                                         });
-                                        console.log(card);
                                 });
+                                playerTurn = (playerTurn == 0)? 1 :0;
                             }
                             turnCounter = 0;
-                            playerTurn = (playerTurn == 0)? 1 :0;
                             turnSelections = [];
+                            console.log('Next Turn:' + playerTurn);
                         }
                     });
                 });
