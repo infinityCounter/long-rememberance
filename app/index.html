@@ -202,13 +202,15 @@
                                 playerTurn = (playerTurn === 0) ? 1 : 0;
                             //console.log("Next player turn: " + playerTurn);
                             if(playerTurn === 1){
+                                $('#statusBar').text('Player 2\'s Turn');
                                 setTimeout(function(){
                                     ai.aiTurn(removedFromPlay);
                                 }, 1000);
                             }else{
+                                $('#statusBar').text('Player 1\'s Turn');
                                 setTimeout(function(){
                                     $('#cover').css('z-index', -1);
-                                    //player.aiTurn(removedFromPlay);
+                                 //   player.aiTurn(removedFromPlay);
                                 }, 1000);
                             }
                             
@@ -217,6 +219,12 @@
                     }
                 });
             });
+
+            function start(){
+                setTimeout(function(){
+                ai.aiTurn(removedFromPlay);    
+            },4500)
+            }
 
 
         </script>
