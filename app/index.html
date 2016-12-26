@@ -193,6 +193,8 @@
                         if(numRemovedFromPlay === 50){  //WILL ONLY MAKE IT TO 50 BECAUSE OF DELAY
                             var winner = (playerPoints[0] < playerPoints[1]) ? 2 : 1;
                             //console.log('DELCARING WINNER');
+                            var winnerClass = "position: absolute;bottom: 45%;height: 130px;line-height: 130px;font-size: 60px;font-family: 'Orbitron', sans-serif;color: #fff;text-align: center;width: 100%;z-index: 999;background: #000;opacity: 0.6;";
+                            $('#statusBar').attr("style", winnerClass);
                             $('#statusBar').text('WINNER IS Player '+ winner + '.');
                             return null;
                         }else{
