@@ -17,6 +17,27 @@
                 top: 17.5%;
             }
 
+            #cover{
+                height: 65%; 
+                width: 100%; 
+                opacity: 0;
+                position: absolute; 
+                top: 17.5%;
+                z-index: -1;
+            }
+
+            #statusBar{
+                position: absolute;
+                bottom: 17.5%; 
+                width: 100%;
+                height: 7.5%;
+                z-index: 80;
+                font-family: 'Orbitron', sans-serif;
+                color: #fff;
+                font-size: 18px;
+                text-align: center;
+            }
+
             .matched{
                 color: gray!important;
                 background-color: gray!important;
@@ -35,14 +56,18 @@
                 color: #fff;
             }
 
-            .playerBar:first-of-type{
+            div:nth-of-type(3){
                 top:0;
             }
 
         </style>
     </head>
     <body>
-
+        <div id="cover">
+        </div>
+        <div id="statusBar">
+            Player 1's Turn
+        </div>
         <div id="player1bar" class="playerBar">
                 <div class="playerIDDiv">
                     PLAYER 1 &nbsp;&nbsp; (YOU)
@@ -64,12 +89,22 @@
         </div>
         
         <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="./ai.js"></script>
         <script>
-            var turnCounter = 0;
-            var turnSelections = [];
+
+            var ranks = ['a', '2','3','4','5','6','7','8','9','10','j','q','k'];
+            var suits = ['diams','hearts','spades','clubs'];
+            var cards = [];
+            var currentlySelectedCards = [];
+            var numOfCardsSelected = 0;
+            var playerPoints = [0,0];
             var playerTurn = 0;
-            var players = [0,0];
-            var timer = 5;
+            var removedFromPlay = [];
+            var numRemovedFromPlay = 0;
+            var ai = new Ai();
+            var player = new Ai();
+            var changePlayer = true;
+
             function shuffle(array) {
                 var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -88,68 +123,97 @@
 
                 return array;
             }
-            var ranks = ['a', '2','3','4','5','6','7','8','9','10','j','q','k'];
-            var suits = ['diams','hearts','spades','clubs'];
-            var cards = [];
-            $.each(ranks, function(index, rank) {
-                var val = (index+1)*4-4;
-                $.each(suits, function(index, suit){
 
-                    var card = {};
-                    var $el = document.createElement('div');
-                    $($el).addClass("card rank-"+rank+" "+suit+" back");
-                    $el.innerHTML = "<div class='rank'>"+rank+"</div><div class='suit'>&"+suit+";</div>";
-                    val++;
-                    card.place = val;
-                    card.$el = $el;
-                    card.rank = rank;
-                    card.suit = suit;
-                    card.flipable = true;
-                    $el.card = card;
-                    cards.push(card);
-                    cards = shuffle(cards);
-                    $.each(cards, function( index, card ){
-                        $("#container").append(card.$el);
-                    })
+            $.each(suits, function(index, suit){
 
-                    $($el).click( function(){
-                        if($el.card.flipable === false){
-                            return;
-                        }
-                        $el.card.flipable = !$el.card.flipable;
-                        $($el).toggleClass("back");
-                        turnSelections.push($el);
-                        turnCounter++;
-                        if(turnCounter == 2){
-                            if(turnSelections[0].card.rank === turnSelections[1].card.rank){
-                                players[playerTurn]++;
-                                console.log(turnSelections);
-                                $.each(turnSelections, function(index, card){
-
-                                        card.className = '';
-                                        $(card).toggleClass("card");
-                                        $(card).attr('style','color: #fff!important; background-color: #fff!important');
-                                        $(card).prop('onclick',null).off('click');
-                                });
-                                $('#player' + (playerTurn + 1) + 'points').text('POINTS: '+players[playerTurn]);
-                                console.log(players[playerTurn]);
-                            }else{
-                               $.each(turnSelections, function(index, card){
-                                        $(card).delay(1000).queue(function(next){
-                                            card.card.flipable = true;
-                                            $(this).toggleClass("back");
-                                            next();
-                                        });
-                                });
-                                playerTurn = (playerTurn == 0)? 1 :0;
-                            }
-                            turnCounter = 0;
-                            turnSelections = [];
-                            console.log('Next Turn:' + playerTurn);
-                        }
-                    });
+                var placeInDeck = ((index+1)*4)-4;
+                $.each(ranks, function(index, rank){
+                    placeInDeck++;
+                    var el = document.createElement("div");
+                    $(el).addClass("card rank-"+rank+" "+suit+" back");
+                    el.innerHTML = "<div class='rank'>"+rank+"</div><div class='suit'>&"+suit+";</div>";
+                    var data = {suit: suit, rank: rank, place: placeInDeck, flipable: true};
+                    el.data = data;
+                    cards.push(el);
                 });
             });
+
+            cards = shuffle(cards);
+
+            $.each(cards, function(index, card){
+                card.data['position'] = index + 1;
+                card.id = "card" + card.data.position;
+                $("#container").append(card);
+                $(card).click(function() {
+
+                    if(!card.data.flipable || currentlySelectedCards.includes(card) || numOfCardsSelected > 2)
+                        return null;
+                    $(card).toggleClass("back");
+                    card.data.flipable = false;
+                    currentlySelectedCards.push(card);
+                    numOfCardsSelected++;
+                //    console.log('Number of cards up' +  numOfCardsSelected);
+                    if(numOfCardsSelected === 2){
+
+                        if(currentlySelectedCards[0].data.rank === currentlySelectedCards[1].data.rank){
+                            //console.log('cards Match');
+                            playerPoints[playerTurn]++;
+                            $.each(currentlySelectedCards, function(index, card){
+                                setTimeout( function(){
+                                    card.className = '';
+                                    $(card).toggleClass("card");
+                                    $(card).attr('style','color: #fff!important; background-color: #fff!important');
+                                    $(card).prop('onclick',null).off('click');
+                                    removedFromPlay.push(card.data.position);
+                                    numRemovedFromPlay++;
+                                }, 500);
+                            });
+                            numOfCardsSelected = 0;
+                            currentlySelectedCards = [];
+                            $('#player' + (playerTurn + 1) + 'points').text('POINTS: '+playerPoints[playerTurn]);
+                            changePlayer = false;    
+                    }else{
+                  //          console.log('cards not a match');
+                            var card1 = currentlySelectedCards[0];
+                            var card2 = currentlySelectedCards[1];
+
+                            setTimeout(function(){
+                                $(card1).toggleClass("back");
+                                card1.data.flipable = true;
+                                $(card2).toggleClass("back");
+                                card2.data.flipable = true;
+                                numOfCardsSelected = 0;
+                                currentlySelectedCards = [];
+                            }, 700);
+                            changePlayer = true;
+                        }
+                        //console.log("NUMBER REMOVED FROM PLAY: " +numRemovedFromPlay);
+                        if(numRemovedFromPlay === 50){  //WILL ONLY MAKE IT TO 50 BECAUSE OF DELAY
+                            var winner = (playerPoints[0] < playerPoints[1]) ? 2 : 1;
+                            //console.log('DELCARING WINNER');
+                            $('#statusBar').text('WINNER IS Player '+ winner + '.');
+                            return null;
+                        }else{
+                            if(changePlayer)
+                                playerTurn = (playerTurn === 0) ? 1 : 0;
+                            //console.log("Next player turn: " + playerTurn);
+                            if(playerTurn === 1){
+                                setTimeout(function(){
+                                    ai.aiTurn(removedFromPlay);
+                                }, 1000);
+                            }else{
+                                setTimeout(function(){
+                                    player.aiTurn(removedFromPlay);
+                                }, 1000);
+                            }
+                            
+                        }
+                        
+                    }
+                });
+            });
+
+
         </script>
     </body>
 </html>
