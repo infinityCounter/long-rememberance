@@ -8,6 +8,8 @@ NOTE: The code for this game was hastily written in my spare time just to do som
 
 Also, credit to @selfthinker for his css playing card code which made this possible. You can find it over on his repo at: https://github.com/selfthinker/CSS-Playing-Cards
 ###Installation
+
+
 1. Install npm
 
 2. Clone this repository
@@ -20,7 +22,7 @@ Done!
 
 ###Rules
 
-In this game the player 2 is an AI, player one is you.
+In this game the player 2 is an AI (I use this term veeeery loosely), player one is you.
 
 1. The player starts the game by picking two cards. (AND ONLY TWO CARDS)
 
@@ -31,3 +33,11 @@ In this game the player 2 is an AI, player one is you.
 4. Enjoy
 
 The game is actually really simple. Try your best, this game is a really fun way to improve your memory.
+
+Features to be added:
+
+1. Capacity for more than two players
+
+2. Timed mode
+
+3. Challenge (Shuffle) Mode
