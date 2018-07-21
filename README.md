@@ -1,6 +1,6 @@
 # Long Rememberance
 
-Long Rememberance (as it's called in Jamaica) is a memory card game where you try to located as many matching pairs of cards (by rank, not suit) from a spread Deck as possible.
+Long Rememberance is a memory card game where you try to located as many matching pairs of cards (by rank, not suit) from a spread Deck as possible.
 Players alternate taking turns. During a turn a player flips two cards, if the ranks match, they gain a point, and those two cards are removed from play, the player is then given another turn.
 
 NOTE: The code for this game was hastily written for my annual "Who can code the best game in 2 days" competition with a couple of friends!
@@ -15,6 +15,8 @@ Also, credit to @selfthinker for his css playing card code which made this possi
 2. Clone this repository
 
 3. Run npm install from the root of this repository
+
+5. Bower install jquery and this repo: https://github.com/selfthinker/CSS-Playing-Cards from the root of the repository.
 
 4. Open the index.html file in the app folder
 
